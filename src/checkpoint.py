@@ -1,0 +1,6 @@
+def save_checkpoint(*, path):
+    ...
+
+
+def load_checkpoint(*, path):
+    ...
