@@ -2,21 +2,22 @@ import json
 import sys
 
 from src.cli import parse_args
+from src.config import get_config
 
 
 def run():
     ...
 
 
-def train(out, is_smoke=False):
+def command_train(out, is_smoke=False):
     ...
 
 
-def evaluate(checkpoint, out):
+def command_evaluate(checkpoint, out):
     ...
 
 
-def split(out):
+def command_split(out):
     ...
 
 
