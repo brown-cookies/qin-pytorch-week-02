@@ -5,21 +5,19 @@ from sklearn.preprocessing import StandardScaler
 
 import torch
 
-
-def get_datasets(*, cfg):
-    ...
+from src.data.pipeline import load_data
 
 
 def split_indices(*, y, val_split: float, test_split: float, seed: int):
     ...
 
 
-def load_datasets(*, cfg):
+def split(*, cfg):
     """
-    Load the diabetes dataset, split it, standardize the features,
+    Load the hospital dataset, split it, standardize the features,
     and convert everything into PyTorch tensors.
     """
-    data = get_datasets()
+    df = load_data()
 
     return {
         "X_train": X_train,
