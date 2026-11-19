@@ -11,7 +11,6 @@ ID_COLS = [
 ]
 
 BINARY_COLS = [
-    "gender",
     "tolbutamide",
     "glipizide-metformin",
     "troglitazone",
@@ -24,7 +23,6 @@ BINARY_COLS = [
 ]
 
 BINARY_MAP = {
-    "gender": {"Female": 0, "Male": 1, "Unknown/Invalid": None},
     "tolbutamide": {"No": 0, "Steady": 1},
     "glipizide-metformin": {"No": 0, "Steady": 1},
     "troglitazone": {"No": 0, "Steady": 1},
@@ -37,7 +35,9 @@ BINARY_MAP = {
 }
 
 ONE_HOT_COLS = [
-    "readmitted",
+    "gender",
+    "examide",
+    "citoglipton",
     "tolazamide",
     "nateglinide",
     "glimepiride",
@@ -55,6 +55,11 @@ ONE_HOT_COLS = [
     "chlorpropamide",
     "max_glu_serum",
     "race",
+    "weight",
+    "payer_code",
+    "medical_specialty",
+    *DIAG_COLS,
+    *ID_COLS,
 ]
 
 
@@ -90,29 +95,54 @@ def icd9_group(code: str | float) -> str:
 def encode_binary(df: pd.DataFrame) -> pd.DataFrame:
     """Two-value text columns -> 0/1, using BINARY_COLS and BINARY_MAP."""
     out = df.copy()
+
     for col in BINARY_COLS:
+
+        if col not in out.columns:
+            continue
+
         out[col] = out[col].map(BINARY_MAP[col])
+
     return out
 
 
 def encode_age(df: pd.DataFrame) -> pd.DataFrame:
     """Age bracket -> middle number, e.g. "[70-80)" -> 75."""
+    if "age" not in df.columns:
+        return df
+
     out = df.copy()
     out["age"] = out["age"].str.extract(r"\[(\d+)")[0].astype(int) + 5
+
     return out
 
 
+def one_hot_encode(df: pd.DataFrame) -> pd.DataFrame:
+    """Convert text categories to 0/1 indicator columns."""
+    cols = [c for c in ONE_HOT_COLS if c in df.columns]
+
+    return pd.get_dummies(df, columns=cols, dtype="float32")
+
+
 def group_diagnoses(df: pd.DataFrame) -> pd.DataFrame:
+    """~700 ICD-9 codes -> ~10 diagnosis groups."""
     out = df.copy()
+
     for col in DIAG_COLS:
-        out[col] = out[col].map(icd9_group)
+
+        if col in out.columns:
+            out[col] = out[col].map(icd9_group)
+
     return out
 
 
 def ids_to_str(df: pd.DataFrame) -> pd.DataFrame:
     """ID codes are labels, not quantities, so treat them as text."""
     out = df.copy()
-    out[ID_COLS] = out[ID_COLS].astype(str)
+
+    cols = [c for c in ID_COLS if c in out.columns]
+    out[cols] = out[cols].astype(str)
+
     return out
 
 
@@ -120,4 +150,5 @@ def add_target(df: pd.DataFrame) -> pd.DataFrame:
     """1 if readmitted within 30 days, otherwise 0."""
     out = df.copy()
     out[TARGET] = (out[RAW_LABEL] == "<30").astype("int64")
+
     return out

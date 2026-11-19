@@ -86,4 +86,4 @@ def get_features() -> list[str]:
     if len(FEATURES) != len(set(FEATURES)):
         raise ValueError("Duplicate names in the feature list")
 
-    return FEATURES
+    return KEEP + FEATURES
