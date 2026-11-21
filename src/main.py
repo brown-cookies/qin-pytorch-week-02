@@ -5,6 +5,7 @@ import torch
 from src.cli import parse_args
 from src.config import get_config
 from src.data.pipeline import prepare_data
+from src.eval import evaluate_model
 from src.loader import make_loader
 from src.model import ReadmittanceModel
 from src.split import split_train_val_test
@@ -58,7 +59,13 @@ def run():
         cfg=cfg
     )
 
-    print(history)
+    evaluation = evaluate_model(model=model, test_loader=test_loader)
+
+    print("accuracy: ", evaluation["accuracy"])
+    print("precision: ", evaluation["precision"])
+    print("recall: ", evaluation["recall"])
+    print("f1: ", evaluation["f1"])
+    print("confusion: ", evaluation["confusion"])
 
 
 def command_train(out, is_smoke=False):
