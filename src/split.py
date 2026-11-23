@@ -51,7 +51,7 @@ def split_indices(*, groups, val_split: float, test_split: float, seed: int):
     }
 
 
-def split_train_val_test(*, df: pd.Dataframe, cfg: Config):
+def split_train_val_test(*, df: pd.DataFrame, cfg: Config):
     """
     Build the hospital dataset, split it by patient, standardize the
     numeric features, and convert everything into PyTorch tensors.
@@ -79,6 +79,10 @@ def split_train_val_test(*, df: pd.Dataframe, cfg: Config):
     y_val = y[split["validation"]]
     y_test = y[split["test"]]
 
+    num_pos = np.sum(y_train == 1)
+    num_neg = np.sum(y_train == 0)
+    pos_weight = torch.tensor([num_neg / num_pos], dtype=torch.float32)
+
     scaler = StandardScaler()
     X_train[NUMERIC_COLS] = scaler.fit_transform(X_train[NUMERIC_COLS])
     X_val[NUMERIC_COLS] = scaler.transform(X_val[NUMERIC_COLS])
@@ -91,6 +95,7 @@ def split_train_val_test(*, df: pd.Dataframe, cfg: Config):
         "y_train": y_train,
         "y_val": y_val,
         "y_test": y_test,
+        "pos_weight": pos_weight,
         "class_names": ["no_readmit", "readmit"],
         "feature_names": list(X_df.columns),
         "scaler": scaler,
