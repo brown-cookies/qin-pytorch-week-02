@@ -12,7 +12,7 @@ class Config:
     test_size_split: float = 0.15
     val_size_split: float = 0.15
     batch_size: int = 512
-    epochs: int = 1000
+    epochs: int = 30
     learning_rate: float = 0.01
 
 
