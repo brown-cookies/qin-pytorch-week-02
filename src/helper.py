@@ -22,3 +22,7 @@ def print_numbers(results):
     print("F1: ", results["model"]["f1"])
     print("PR-AUC: ", results["model"]["pr_auc"])
     print("Confusion Matrix: ", results["model"]["confusion"])
+
+
+def plot_history(history):
+    ...

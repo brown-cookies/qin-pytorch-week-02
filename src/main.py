@@ -72,9 +72,9 @@ def run():
     )
 
     results = {
-        "trivial": evaluate_baseline(trivial_baseline, X_val, y_val, threshold=0.9),
-        "hgb": evaluate_baseline(gradient_boosted_baseline, X_val, y_val, threshold=0.9),
-        "model": evaluate_model(model=model, loader=val_loader, threshold=0.9)
+        "trivial": evaluate_baseline(trivial_baseline, X_val, y_val, threshold=cfg.threshold),
+        "hgb": evaluate_baseline(gradient_boosted_baseline, X_val, y_val, threshold=cfg.threshold),
+        "model": evaluate_model(model=model, loader=val_loader, threshold=cfg.threshold)
     }
 
     print_numbers(results)

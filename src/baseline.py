@@ -11,9 +11,6 @@ from sklearn.metrics import (
 
 from src.config import Config
 
-# TODO: Add DummyClassifier for Trivial Baseline
-# TODO : add HistGradientBoostingClassifier for Gradient-Boosted Baseline
-
 
 def get_trivial_baseline(X, y):
     classifier = DummyClassifier(strategy="prior")
@@ -42,10 +39,10 @@ def evaluate_baseline(model, X, y, threshold=0.5):
     pr_auc = average_precision_score(y, scores)
 
     return {
-        "accuracy": accuracy,
-        "precision": precision,
-        "recall": recall,
-        "f1": f1,
+        "accuracy": float(accuracy),
+        "precision": float(precision),
+        "recall": float(recall),
+        "f1": float(f1),
         "pr_auc": float(pr_auc),
         "confusion": confusion.tolist(),
     }
