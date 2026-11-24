@@ -77,3 +77,5 @@ cost more and scores move upward. See `LOGS.md Run 2` for the results.
 | File/Function | How it was used |
 |---|---|
 | `src/data` | Asked AI for guidance on how to load, drop, fill, transform, encode the dataset. The code is AI generated, every action it does is what I specify, As I'm not profeccient at using `Pandas` |
+| `tests/test_data` |  |
+| `tests/test_checkpoint` |  |
