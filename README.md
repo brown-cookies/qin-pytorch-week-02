@@ -85,6 +85,47 @@ test scores.
 
 ### 1. Weighted Loss
 
+### Run scores without the weighted loss (scored on validation) at threshold 0.5
+
+```
+My own model Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.1989840003072726
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+```
+### Run scores with weighted loss (scored on validation) at threshold 0.5
+
+```
+My own model Baseline Scores
+Accuracy:  0.6194719255716439
+Precision:  0.16634209672184355
+Recall:  0.6043632075471698
+F1:  0.2608806312038687
+PR-AUC:  0.20738929722792973
+Confusion Matrix:  [[8430, 5137], [671, 1025]]
+```
+
+**Observation**
+
+Without the weighted loss, my model predicted nobody as readmitted. It had
+0 recall and 0 precision. The accuracy of 0.889 looks good, but it only
+means the model said "not readmitted" for everyone, and about 89% of patients
+are not readmitted.
+
+With the weighted loss, the model started finding readmitted patients
+
+| My model at 0.5 (validation) | Without weight | With weight |
+|---|---|---|
+| Accuracy | 0.8888816091200944 | 0.6194719255716439 |
+| Precision | 0.0 | 0.16634209672184355 |
+| Recall | 0.0 | 0.6043632075471698 |
+| F1 | 0.0 | 0.2608806312038687 |
+| PR-AUC | 0.1989840003072726 | 0.20738929722792973 |
+| Confusion matrix | [[13567, 0], [1696, 0]] | [[8430, 5137], [671, 1025]] |
+
 ### 2. 
 
 ## AI Usage
