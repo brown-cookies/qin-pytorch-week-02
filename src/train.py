@@ -52,11 +52,11 @@ def train_model(*, model, train_loader, val_loader, optimizer, criterion, resume
             path=checkpoint_path
         )
 
-        last_epoch = checkpoint["epoch"]
+        last_epoch = ckpt["epoch"]
         train_loss_per_epoch = ckpt["history"]["train_loss_per_epoch"]
         val_loss_per_epoch = ckpt["history"]["val_loss_per_epoch"]
         val_acc_per_epoch = ckpt["history"]["val_acc_per_epoch"]
-        best_val_loss = checkpoint["best_val_loss"]
+        best_val_loss = ckpt["best_val_loss"]
 
         start = last_epoch + 1
 

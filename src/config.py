@@ -14,6 +14,7 @@ class Config:
     batch_size: int = 512
     epochs: int = 30
     learning_rate: float = 0.01
+    threshold: float = 0.5
 
 
 def get_config(*, is_ci=False, is_smoke=False) -> Config:

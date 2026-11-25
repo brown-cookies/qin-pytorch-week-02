@@ -24,7 +24,7 @@ def load_checkpoint(*, model, optim, path):
     ckpt_path = Path(path) / "best_run.pt"
     ckpt = torch.load(
         ckpt_path,
-        map_location=map_location,
+        map_location="cpu",
         weights_only=True,
     )
 
