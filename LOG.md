@@ -253,3 +253,119 @@ F1:  0.2565359477124183
 PR-AUC:  0.20123723907013816
 Confusion Matrix:  [[8861, 4706], [754, 942]]
 ```
+
+# 12th run Scores at threshold 0.5 on validation
+
+What changed: Change optimizer from SGD to Adam
+Why changed: To check whether changing optimizer improves PR-AUC
+
+```
+Trivial Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.11111839087990566
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+HGB Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.22797038159861208
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+My own model Baseline Scores
+Accuracy:  0.5361331324117146
+Precision:  0.14792048129741042
+Recall:  0.6668632075471698
+F1:  0.24213230571612074
+PR-AUC:  0.18846554068787913
+Confusion Matrix:  [[7052, 6515], [565, 1131]]
+```
+
+# 13th run Scores at threshold 0.5 on validation
+
+What changed: Increase the batch size to 1024
+Why changed: Experimentation on hyperparameters to check whether batch size have impact on PC-AUC
+
+```
+Trivial Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.11111839087990566
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+HGB Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.22797038159861208
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+My own model Baseline Scores
+Accuracy:  0.6441721810915285
+Precision:  0.16514254975793438
+Recall:  0.5430424528301887
+F1:  0.2532655025436546
+PR-AUC:  0.200104714437276
+Confusion Matrix:  [[8911, 4656], [775, 921]]
+```
+
+# 14th run Scores at threshold 0.5 on validation
+
+What changed: Decrease the batch size to 256
+Why changed: Experimentation on hyperparameters to check whether batch size have impact on PC-AUC
+
+```
+Trivial Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.11111839087990566
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+HGB Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.22797038159861208
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+My own model Baseline Scores
+Accuracy:  0.6244512874271113
+Precision:  0.17122841316389703
+Recall:  0.6196933962264151
+F1:  0.26831758999234107
+PR-AUC:  0.21910716656522888
+Confusion Matrix:  [[8480, 5087], [645, 1051]]
+```
+
+# 15th run Scores at threshold 0.5 on validation
+
+What changed: Decrease the batch size to 128
+Why changed: Experimentation on hyperparameters to check whether batch size have impact on PC-AUC
+
+```
+Trivial Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.11111839087990566
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+HGB Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.22797038159861208
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+My own model Baseline Scores
+Accuracy:  0.5897267902771408
+Precision:  0.16544548651817115
+Recall:  0.6656839622641509
+F1:  0.2650234741784038
+PR-AUC:  0.22815517456710088
+Confusion Matrix:  [[7872, 5695], [567, 1129]]
+```
