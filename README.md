@@ -67,6 +67,20 @@ cost more and scores move upward. See `LOGS.md Run 2` for the results.
 **5. Conclusion**
 - My model (F1 0.261 at 0.5) is slightly above HGB's best of these runs (F1 0.251 at 0.1), but its PR-AUC (0.207) is below HGB (0.228).
 
+## Leakage Audit
+
+### 1. Patient ID Grouping `patient_nbr`
+```
+rows: 101766
+unique patients: 71518
+```
+
+**Observation** The dataset has ~101k rows but the `patient_nbr` has only around ~71k count. So some patients
+have a multiple visit. After researching, if not grouped properly, the model can just memorize those and inflates the
+test scores.
+
+**What I did** Split by patients, not by rows. All rows of the same `patient_nbr` goes to same set (train, val, test).
+
 ## Ways of Handling the Imbalanced (What I did)
 
 ### 1. Weighted Loss
