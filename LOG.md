@@ -193,3 +193,63 @@ F1:  0.13274768179599805
 PR-AUC:  0.20738929722792973
 Confusion Matrix:  [[13350, 217], [1560, 136]]
 ```
+
+# 8th run Scores at threshold 0.5 on validation
+
+What changed: Remove the weighted loss
+Why changed: To log the results without the weighted loss
+```
+
+My own model Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.1989840003072726
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+```
+
+# 9th run Scores at threshold 0.5 on validation
+
+What changed: Add the weighted loss
+Why changed: To log the results with the weighted loss
+
+```
+My own model Baseline Scores
+Accuracy:  0.6194719255716439
+Precision:  0.16634209672184355
+Recall:  0.6043632075471698
+F1:  0.2608806312038687
+PR-AUC:  0.20738929722792973
+Confusion Matrix:  [[8430, 5137], [671, 1025]]
+```
+
+# 10th run Scores at threshold 0.5 on validation
+
+What changed: Remove the weighted loss
+Why changed: To log the results for comparison with using the WeightedRandomSampler
+
+```
+My own model Baseline Scores
+Accuracy:  0.8888816091200944
+Precision:  0.0
+Recall:  0.0
+F1:  0.0
+PR-AUC:  0.1989840003072726
+Confusion Matrix:  [[13567, 0], [1696, 0]]
+```
+
+# 11th run Scores at threshold 0.5 on validation
+
+What changed: Add the WeightedRandomSampler
+Why changed: To log the results for comparison with using the WeightedRandomSampler
+
+```
+My own model Baseline Scores
+Accuracy:  0.6422721614361527
+Precision:  0.16678470254957506
+Recall:  0.5554245283018868
+F1:  0.2565359477124183
+PR-AUC:  0.20123723907013816
+Confusion Matrix:  [[8861, 4706], [754, 942]]
+```
