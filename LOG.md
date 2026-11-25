@@ -15,6 +15,7 @@ confusion:  [
 
 What changed: Added pos_weight for BCEWithLogitsLoss
 Why changed: The dataset is heavily imbalanced, with around ~11% of readmittion rate. See `First Run`
+What happened: The model is not predicting everything as negative.
 
 ```
 accuracy:  0.6254964257347101
@@ -31,6 +32,7 @@ confusion:  [
 
 What changed: Added Trivial and HistGradientBoosted Baseline
 Why changed: To establish metrics to beat for my network
+What happened: Have a baseline score to beat, Trivial, and Gradient Boosted
 
 ```
 Trivial Baseline Score
@@ -73,6 +75,7 @@ My own model scores
 
 What changed: The threshold comparison
 Why changed: To experiment the results at different threshold
+What happened: My model only identified 10 out of 1686, which is worse compare to the previous run
 
 ```
 Trivial Baseline Scores
@@ -111,6 +114,7 @@ Confusion Matrix:  [
 
 What changed: The threshold comparison
 Why changed: To experiment the results at different threshold
+What happened: The model behaves almost identical to the trivial baseline
 
 ```
 Trivial Baseline Scores
@@ -140,6 +144,7 @@ Confusion Matrix:  [[0, 13567], [0, 1696]]
 
 What changed: The threshold comparison
 Why changed: To experiment the results at different threshold
+What happened: My model almost flagged everyone
 
 ```
 Trivial Baseline Scores
@@ -169,6 +174,7 @@ Confusion Matrix:  [[190, 13377], [3, 1693]]
 
 What changed: The threshold comparison
 Why changed: To experiment the results at different threshold
+What happened: 
 
 ```
 Trivial Baseline Scores
@@ -198,8 +204,9 @@ Confusion Matrix:  [[13350, 217], [1560, 136]]
 
 What changed: Remove the weighted loss
 Why changed: To log the results without the weighted loss
-```
+What happened: without the weightes loss, my model predicts everything as negative
 
+```
 My own model Baseline Scores
 Accuracy:  0.8888816091200944
 Precision:  0.0
@@ -213,6 +220,7 @@ Confusion Matrix:  [[13567, 0], [1696, 0]]
 
 What changed: Add the weighted loss
 Why changed: To log the results with the weighted loss
+What happened: My model behaves the same way with Run 2
 
 ```
 My own model Baseline Scores
@@ -228,6 +236,7 @@ Confusion Matrix:  [[8430, 5137], [671, 1025]]
 
 What changed: Remove the weighted loss
 Why changed: To log the results for comparison with using the WeightedRandomSampler
+What happened: The same thing with Run 8
 
 ```
 My own model Baseline Scores
@@ -243,6 +252,7 @@ Confusion Matrix:  [[13567, 0], [1696, 0]]
 
 What changed: Add the WeightedRandomSampler
 Why changed: To log the results for comparison with using the WeightedRandomSampler
+What happened: The model stops predicting everything as negative.
 
 ```
 My own model Baseline Scores
@@ -258,6 +268,7 @@ Confusion Matrix:  [[8861, 4706], [754, 942]]
 
 What changed: Change optimizer from SGD to Adam
 Why changed: To check whether changing optimizer improves PR-AUC
+What happened: PR-AUC dropped for about 0.02
 
 ```
 Trivial Baseline Scores
@@ -287,6 +298,7 @@ Confusion Matrix:  [[7052, 6515], [565, 1131]]
 
 What changed: Increase the batch size to 1024
 Why changed: Experimentation on hyperparameters to check whether batch size have impact on PC-AUC
+What happened: PR-AUC decreases for about 0.006.
 
 ```
 Trivial Baseline Scores
@@ -316,6 +328,7 @@ Confusion Matrix:  [[8911, 4656], [775, 921]]
 
 What changed: Decrease the batch size to 256
 Why changed: Experimentation on hyperparameters to check whether batch size have impact on PC-AUC
+What happened: PR-AUC increases for about 0.01
 
 ```
 Trivial Baseline Scores
@@ -345,6 +358,7 @@ Confusion Matrix:  [[8480, 5087], [645, 1051]]
 
 What changed: Decrease the batch size to 128
 Why changed: Experimentation on hyperparameters to check whether batch size have impact on PC-AUC
+What happened: PR-AUC increases for about 0.02
 
 ```
 Trivial Baseline Scores
