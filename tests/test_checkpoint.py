@@ -17,7 +17,7 @@ def test_round_trip_weights_and_bias_match(tmp_path):
     torch.manual_seed(0)
 
     model = ReadmittanceModel(N_FEATURES)
-    optim = torch.optim.SGD(model.parameters(), lr=0.01)
+    optim = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
     save_checkpoint(
         epoch=1,
@@ -30,7 +30,7 @@ def test_round_trip_weights_and_bias_match(tmp_path):
 
     torch.manual_seed(1)
     new_model = ReadmittanceModel(N_FEATURES)
-    new_optim = torch.optim.SGD(new_model.parameters(), lr=0.01)
+    new_optim = torch.optim.SGD(new_model.parameters(), lr=0.01, momentum=0.9)
 
     load_checkpoint(
         model=new_model,
@@ -77,7 +77,7 @@ def test_resume_run_match_with_uninterrupted_run(tmp_path, cfg):
         val_loader = make_loader(X_df.iloc[140:], y_np[140:], batch_size=32)
 
         model = ReadmittanceModel(N_FEATURES)
-        optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+        optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9)
         criterion = torch.nn.BCEWithLogitsLoss()
 
         return model, optimizer, criterion, train_loader, val_loader
@@ -126,6 +126,9 @@ def test_resume_run_match_with_uninterrupted_run(tmp_path, cfg):
         checkpoint_path=tmp_path / "interrupted",
         cfg=replace(cfg, epochs=10)
     )
+
+    print("uninterrupted: ", i_optim.state_dict())
+    print("resume: ", r_optim.state_dict())
 
     for u, r in zip(u_model.state_dict().values(), r_model.state_dict().values()):
         assert torch.allclose(u, r)
