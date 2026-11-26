@@ -60,7 +60,7 @@ def train_model(*, model, train_loader, val_loader, optimizer, criterion, resume
         best_val_loss = ckpt["best_val_loss"]
         rng_state = ckpt["rng_state"]
 
-        # torch.set_rng_state(rng_state)
+        torch.set_rng_state(rng_state)
 
         start = last_epoch + 1
 
