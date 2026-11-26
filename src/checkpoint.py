@@ -15,6 +15,7 @@ def save_checkpoint(*, epoch, model, optim, history, best_val_loss, path, name="
         "optimizer": optim.state_dict(),
         "history": history,
         "best_val_loss": best_val_loss,
+        "rng_state": torch.get_rng_state(),
     }
 
     torch.save(state, ckpt_path)

@@ -58,6 +58,9 @@ def train_model(*, model, train_loader, val_loader, optimizer, criterion, resume
         val_loss_per_epoch = ckpt["history"]["val_loss_per_epoch"]
         val_acc_per_epoch = ckpt["history"]["val_acc_per_epoch"]
         best_val_loss = ckpt["best_val_loss"]
+        rng_state = ckpt["rng_state"]
+
+        torch.set_rng_state(rng_state)
 
         start = last_epoch + 1
 

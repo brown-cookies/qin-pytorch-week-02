@@ -1,10 +1,11 @@
 from dataclasses import replace
 
+import pandas as pd
 import torch
-from torch.utils.data import DataLoader, TensorDataset
 
 from src.checkpoint import load_checkpoint, save_checkpoint
 from src.config import Config
+from src.loader import make_loader
 from src.model import ReadmittanceModel
 from src.train import train_model
 
@@ -61,20 +62,22 @@ def test_resume_run_match_with_uninterrupted_run(tmp_path, cfg):
     def init_everything(seed, lr):
         torch.manual_seed(seed)
 
-        g = torch.Generator().manual_seed(seed)
-        X = torch.randn(200, N_FEATURES, generator=g)
-        true_w = torch.randn(N_FEATURES, generator=g)
-        y = (torch.rand(200, generator=g) <
+        X = torch.randn(200, N_FEATURES)
+        true_w = torch.randn(N_FEATURES)
+        y = (torch.rand(200) <
              torch.sigmoid(X @ true_w - 2.0)).float()
 
-        t_ds = TensorDataset(X[:140], y[:140])
-        v_ds = TensorDataset(X[140:], y[140:])
+        X_df = pd.DataFrame(X.numpy())
+        y_np = y.numpy()
 
-        train_loader = DataLoader(t_ds, batch_size=32, shuffle=True)
-        val_loader = DataLoader(v_ds, batch_size=32)
+        train_loader = make_loader(
+            X_df.iloc[:140], y_np[:140], batch_size=32, shuffle=True
+        )
+
+        val_loader = make_loader(X_df.iloc[140:], y_np[140:], batch_size=32)
 
         model = ReadmittanceModel(N_FEATURES)
-        optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9)
+        optimizer = torch.optim.SGD(model.parameters(), lr=lr)
         criterion = torch.nn.BCEWithLogitsLoss()
 
         return model, optimizer, criterion, train_loader, val_loader
