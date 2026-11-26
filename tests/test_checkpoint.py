@@ -1,7 +1,12 @@
+from dataclasses import replace
+
 import torch
+from torch.utils.data import DataLoader, TensorDataset
 
 from src.checkpoint import load_checkpoint, save_checkpoint
+from src.config import Config
 from src.model import ReadmittanceModel
+from src.train import train_model
 
 
 N_FEATURES = 8
@@ -42,3 +47,82 @@ def test_round_trip_weights_and_bias_match(tmp_path):
     assert torch.equal(weights["net.2.bias"], new_weights["net.2.bias"])
     assert torch.equal(weights["net.4.weight"], new_weights["net.4.weight"])
     assert torch.equal(weights["net.4.bias"], new_weights["net.4.bias"])
+
+
+def test_resume_run_match_with_uninterrupted_run(tmp_path, cfg):
+    # i = interrupted
+    # u = uniterrupted
+    # r = resume interrupted
+
+    torch.manual_seed(0)
+
+    lr = 0.01
+
+    def init_everything(seed, lr):
+        torch.manual_seed(seed)
+
+        g = torch.Generator().manual_seed(seed)
+        X = torch.randn(200, N_FEATURES, generator=g)
+        true_w = torch.randn(N_FEATURES, generator=g)
+        y = (torch.rand(200, generator=g) <
+             torch.sigmoid(X @ true_w - 2.0)).float()
+
+        t_ds = TensorDataset(X[:140], y[:140])
+        v_ds = TensorDataset(X[140:], y[140:])
+
+        train_loader = DataLoader(t_ds, batch_size=32, shuffle=True)
+        val_loader = DataLoader(v_ds, batch_size=32)
+
+        model = ReadmittanceModel(N_FEATURES)
+        optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9)
+        criterion = torch.nn.BCEWithLogitsLoss()
+
+        return model, optimizer, criterion, train_loader, val_loader
+
+    i_model, i_optim, i_criterion, i_train_loader, i_val_loader = init_everything(
+        0, lr
+    )
+
+    train_model(
+        model=i_model,
+        train_loader=i_train_loader,
+        val_loader=i_val_loader,
+        optimizer=i_optim,
+        criterion=i_criterion,
+        resume=False,
+        checkpoint_path=tmp_path / "interrupted",
+        cfg=replace(cfg, epochs=5)
+    )
+
+    u_model, u_optim, u_criterion, u_train_loader, u_val_loader = init_everything(
+        0, lr
+    )
+
+    train_model(
+        model=u_model,
+        train_loader=u_train_loader,
+        val_loader=u_val_loader,
+        optimizer=u_optim,
+        criterion=u_criterion,
+        resume=False,
+        checkpoint_path=tmp_path / "unterrupted",
+        cfg=replace(cfg, epochs=10)
+    )
+
+    r_model, r_optim, r_criterion, r_train_loader, r_val_loader = init_everything(
+        0, lr
+    )
+
+    train_model(
+        model=r_model,
+        train_loader=r_train_loader,
+        val_loader=r_val_loader,
+        optimizer=r_optim,
+        criterion=r_criterion,
+        resume=True,
+        checkpoint_path=tmp_path / "interrupted",
+        cfg=replace(cfg, epochs=10)
+    )
+
+    for u, r in zip(u_model.state_dict().values(), r_model.state_dict().values()):
+        assert torch.allclose(u, r)

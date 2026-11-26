@@ -49,7 +49,8 @@ def train_model(*, model, train_loader, val_loader, optimizer, criterion, resume
         ckpt = load_checkpoint(
             model=model,
             optim=optimizer,
-            path=checkpoint_path
+            path=checkpoint_path,
+            name="last_run.pt"
         )
 
         last_epoch = ckpt["epoch"]
@@ -103,6 +104,20 @@ def train_model(*, model, train_loader, val_loader, optimizer, criterion, resume
                 path=checkpoint_path
 
             )
+
+        save_checkpoint(
+            epoch=epoch,
+            model=model,
+            optim=optimizer,
+            history={
+                "train_loss_per_epoch": train_loss_per_epoch,
+                "val_loss_per_epoch": val_loss_per_epoch,
+                "val_acc_per_epoch": val_acc_per_epoch,
+            },
+            best_val_loss=best_val_loss,
+            path=checkpoint_path,
+            name="last_run.pt"
+        )
 
     return {
         "train_loss_per_epoch": train_loss_per_epoch,

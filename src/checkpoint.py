@@ -3,11 +3,11 @@ from pathlib import Path
 import torch
 
 
-def save_checkpoint(*, epoch, model, optim, history, best_val_loss, path):
+def save_checkpoint(*, epoch, model, optim, history, best_val_loss, path, name="best_run.pt"):
     directory = Path(path)
     directory.mkdir(parents=True, exist_ok=True)
 
-    ckpt_path = directory / "best_run.pt"
+    ckpt_path = directory / name
 
     state = {
         "epoch": epoch,
@@ -20,8 +20,8 @@ def save_checkpoint(*, epoch, model, optim, history, best_val_loss, path):
     torch.save(state, ckpt_path)
 
 
-def load_checkpoint(*, model, optim, path):
-    ckpt_path = Path(path) / "best_run.pt"
+def load_checkpoint(*, model, optim, path, name="best_run.pt"):
+    ckpt_path = Path(path) / name
     ckpt = torch.load(
         ckpt_path,
         map_location="cpu",
