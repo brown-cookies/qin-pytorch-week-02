@@ -30,7 +30,7 @@ def test_round_trip_weights_and_bias_match(tmp_path):
 
     torch.manual_seed(1)
     new_model = ReadmittanceModel(N_FEATURES)
-    new_optim = torch.optim.SGD(model.parameters(), lr=0.01)
+    new_optim = torch.optim.SGD(new_model.parameters(), lr=0.01)
 
     load_checkpoint(
         model=new_model,
