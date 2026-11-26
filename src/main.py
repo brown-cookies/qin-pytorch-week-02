@@ -57,7 +57,9 @@ def run():
     )
 
     model = ReadmittanceModel(n_features).to(cfg.device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=cfg.learning_rate)
+    optimizer = torch.optim.SGD(
+        model.parameters(), lr=cfg.learning_rate, momentum=0.9
+    )
     criterion = torch.nn.BCEWithLogitsLoss(pos_weight=d["pos_weight"])
 
     history = train_model(
