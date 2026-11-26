@@ -30,6 +30,6 @@ def load_checkpoint(*, model, optim, path, name="best_run.pt"):
     )
 
     model.load_state_dict(ckpt["model"])
-    # optim.load_state_dict(ckpt["optimizer"])
+    optim.load_state_dict(ckpt["optimizer"])
 
     return ckpt
