@@ -24,7 +24,7 @@ def get_config(*, is_ci=False, is_smoke=False) -> Config:
         cfg = replace(cfg, device="cuda")
 
     if is_smoke:
-        cfg = replace(cfg, batch_size=128, epochs=100)
+        cfg = replace(cfg, batch_size=46, epochs=10)
 
     if is_ci:
         cfg = replace(cfg, is_ci=True, device="cpu")

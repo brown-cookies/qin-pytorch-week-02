@@ -249,5 +249,6 @@ no longer predicts everyone as "not readmitted".
 | File/Function | How it was used |
 |---|---|
 | `src/data` | Asked AI for guidance on how to load, drop, fill, transform, encode the dataset. The code is AI generated, every action it does is what I specify, As I'm not profeccient at using `Pandas` |
-| `tests/test_data` |  |
-| `tests/test_checkpoint` |  |
+| `tests/test_data` | Asked AI to help me what kind of test should I write, with references of `torch/week-01-solution`  |
+| `tests/test_checkpoint` | Asked AI for guidance why the test keeps failing and help me diagnose the problem |
+| `src/helper` | Asked AI for formatting the `print_numbers` into much more readable data |
