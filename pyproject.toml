@@ -27,7 +27,7 @@ evaluate = [
     "{metrics_out}",
 ]
 split = ["-m", "src.main", "split", "--out", "{split_out}"]
-checkpoint_url = ""
+checkpoint_url = "https://github.com/brown-cookies/qin-pytorch-week-02/releases/download/0.1.0/best_run.pt"
 metric_name = "test_pr_auc"
-metric_value = 0.0
-tolerance = 0.0
+metric_value = 0.21683630745238044
+tolerance = 0.03
