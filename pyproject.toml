@@ -28,6 +28,6 @@ evaluate = [
 ]
 split = ["-m", "src.main", "split", "--out", "{split_out}"]
 checkpoint_url = ""
-metric_name = "test_accuracy"
+metric_name = "test_pr_auc"
 metric_value = 0.0
 tolerance = 0.0

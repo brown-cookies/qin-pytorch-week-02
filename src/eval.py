@@ -14,10 +14,6 @@ from src.model import ReadmittanceModel
 import torch
 
 
-def val_metrics():
-    ...
-
-
 def evaluate_model(*, model, loader, threshold=0.5):
     model.eval()
 

@@ -217,6 +217,22 @@ test scores.
 
 **What I did** Split by patients, not by rows. All rows of the same `patient_nbr` goes to same set (train, val, test).
 
+
+## Limit
+
+### Review Capacity 
+
+The dataset does not give me a review limit, so this number comes from my own understanding.
+
+The dataset have approx 101k encounters over 130 hospitals over 10 years (1999-2008).
+It has no hospital ids for me to check the spread of the readmittion so I assumed every hospital the same and treat the data as one big hospital, `~101k / 3,650 days ≈ 28 encounters a day`. I do not understand how hospital staffing works, but I understand that in 130 hospitals, they have a different staffing mechanics. 
+
+**Explaination:** The dataset have approx 101k encounters over 130 hospitals over 10 years (1999-2008).
+It has no hospital ids for me to check the spread of the readmittion so I assumed every hospital the same , `~101k / 3,650 days ≈ 28 encounters a day`. I do not understand how hospital staffing works, but I understand that in 130 hospitals, they have a different staffing mechanics. I treat this as rough guide.
+
+**Assumption:** Assuming a nurse can review 10 patients a day on a single shift. 10 out of 28 is approximately 36% patients. My validation and test set is ~15k encounters, at 36%, this is about 5400.
+
+
 ## Ways of Handling the Imbalanced (What I did)
 
 ### 1. Weighted Loss

@@ -15,6 +15,7 @@ class Config:
     epochs: int = 30
     learning_rate: float = 0.01
     threshold: float = 0.5
+    review_capacity: int = 5400
 
 
 def get_config(*, is_ci=False, is_smoke=False) -> Config:
