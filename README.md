@@ -99,6 +99,38 @@ To train the three seeds (42, 76, 127) run `python -m src.main run`.
 
 ## Data after training across three seeds (42, 76, 127)
 
+### My Model Performance
+
+Performance across three random seeds.
+
+| Seed | Accuracy | Precision | Recall | F1-Score | PR-AUC |
+|:----:|---------:|----------:|-------:|---------:|-------:|
+| 42   | 0.6213719452270196 | 0.1674539827333442 | 0.6061320754716981 | 0.2624122527121889 | 0.21683630745238044 |
+| 76   | 0.6665139416153947 | 0.17862595419847327 | 0.5419803126809496 | 0.2686952777379073 | 0.19960835104966174 |
+| 127  | 0.7065117500328213 | 0.1772582841579664 | 0.48002458512599877 | 0.2589093320072932 | 0.19593288221352637 |
+
+### My Model PR-AUC Comparison
+
+Seed 42 is used as the reference baseline.
+
+| Seed | PR-AUC | Difference from Seed 42 |
+|:----:|-------:|------------------------:|
+| 42   | 0.2168 | 0.0000 |
+| 76   | 0.1996 | -0.0172 |
+| 127  | 0.1959 | -0.0209 |
+
+### PR-AUC Baseline Comparison
+
+| Seed | Trivial Baseline | HGB Baseline | My Model |
+|:----:|-----------------:|-------------:|---------:|
+| 42   | 0.11111839087990566 | 0.22797038159861208 | 0.21683630745238044 |
+| 76   | 0.11303835580573374 | 0.23127247748798815 | 0.19960835104966174 |
+| 127  | 0.10680057765524485 | 0.20964018406480855 | 0.19593288221352637 |
+
+Seed 42 has the highest PR-AUC among the 3 seed runs and also got the closest PR-AUC compare to HGB Baseline. But it 
+remained below the HGB baseline across all 3 seeds and didn't not beat it.
+
+
 ## Error Analysis
 
 ### First run didn't predict anything set at threshold 0.5 (Scored on test)

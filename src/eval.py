@@ -47,3 +47,11 @@ def evaluate_model(*, model, loader, threshold=0.5):
         "pr_auc": float(pr_auc),
         "confusion": confusion.tolist(),
     }
+
+
+def _precision_at_k():
+    ...
+
+
+def _recall_at_k():
+    ...
