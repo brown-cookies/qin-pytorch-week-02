@@ -132,10 +132,31 @@ cost more and scores move upward. See `LOGS.md Run 2` for the results.
 
 **Conclusion:** Weighted loss performs slightly better than the WeightedRandomSampler.
 It has higher recall (0.604 vs 0.555), higher F1 (0.261 vs 0.257), higher PR-AUC
-(0.207 vs 0.201), and misses fewer readmitted patients (671 vs 754). The sampler
-only wins on false alarms (4,706 vs 5,137) and accuracy, and precision is the same.
-It is also simpler, because it changes one line in the loss and leaves the data
-loader alone.
+(0.207 vs 0.201), and misses fewer readmitted patients (671 vs 754).
+
+### 3. Run 13, 14, 15 at threshold 0.5 (Scored on validation)
+
+**Main Finding:** These runs checks whether changing batch size have impact on PR-AUC. Lowering the batch size improves the PR-AUC
+
+**DEFAULT Batch Size:** 512 (Run 9)
+
+| Run | What changed |
+|---|---|
+| Run 13 | Increased to 1024 |
+| Run 14 | Decreased to 256 |
+| Run 15 | Decreased to 128 |
+
+| My model at 0.5 (validation) | Run 9 (default) | Run 13 | Run 14 | Run 15 |
+|---|---|---|---|---|
+| Accuracy | 0.6194719255716439 | 0.6441721810915285 | 0.6244512874271113 | 0.5897267902771408 |
+| Precision | 0.16634209672184355 | 0.16514254975793438 | 0.17122841316389703 | 0.16544548651817115 |
+| Recall | 0.6043632075471698 | 0.5430424528301887 | 0.6196933962264151 | 0.6656839622641509 |
+| F1 | 0.2608806312038687 | 0.2532655025436546 | 0.26831758999234107 | 0.2650234741784038 |
+| PR-AUC | 0.20738929722792973 | 0.200104714437276 | 0.21910716656522888 | 0.22815517456710088 |
+| Confusion matrix | [[8430, 5137], [671, 1025]] | [[8911, 4656], [775, 921]] | [[8480, 5087], [645, 1051]] | [[7872, 5695], [567, 1129]] |
+
+**Conclusion:** PR-AUC rises as the batch size goes down, Batch 128 matches the Gradient-Boosted baseline (0.2280), with a gap of about 0.0002. This is
+far better than having a gap of about 0.02.
 
 ## Leakage Audit
 
@@ -228,5 +249,6 @@ no longer predicts everyone as "not readmitted".
 | File/Function | How it was used |
 |---|---|
 | `src/data` | Asked AI for guidance on how to load, drop, fill, transform, encode the dataset. The code is AI generated, every action it does is what I specify, As I'm not profeccient at using `Pandas` |
-| `tests/test_data` |  |
-| `tests/test_checkpoint` |  |
+| `tests/test_data` | Asked AI to help me what kind of test should I write, with references of `torch/week-01-solution`  |
+| `tests/test_checkpoint` | Asked AI for guidance why the test keeps failing and help me diagnose the problem |
+| `src/helper` | Asked AI for formatting the `print_numbers` into much more readable data |

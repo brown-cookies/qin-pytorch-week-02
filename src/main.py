@@ -1,3 +1,4 @@
+from dataclasses import replace
 import json
 from pathlib import Path
 import sys
@@ -5,6 +6,7 @@ import sys
 import torch
 
 from src.baseline import evaluate_baseline, get_gradient_boosted_baseline, get_trivial_baseline
+from src.checkpoint import load_checkpoint
 from src.cli import parse_args
 from src.config import get_config
 from src.data.features import PATIENT_ID
@@ -16,11 +18,81 @@ from src.model import ReadmittanceModel
 from src.split import split_indices, split_train_val_test
 from src.train import train_model
 
+SEEDS = (42, 76, 127)
+
 
 def run():
     cfg = get_config()
 
-    torch.manual_seed(cfg.seed)
+    for seed in SEEDS:
+        print(f"Training at seed: {seed}")
+        cfg = replace(cfg, seed=seed)
+
+        torch.manual_seed(cfg.seed)
+
+        df = prepare_data()
+
+        d = split_train_val_test(df=df, cfg=cfg)
+        X_train = d["X_train"]
+        X_val = d["X_val"]
+        X_test = d["X_test"]
+        y_train = d["y_train"]
+        y_val = d["y_val"]
+        y_test = d["y_test"]
+
+        train_loader = make_loader(
+            X_train,
+            y_train,
+            batch_size=cfg.batch_size,
+            shuffle=True
+        )
+        val_loader = make_loader(
+            X_val,
+            y_val,
+            batch_size=cfg.batch_size
+        )
+
+        n_features = X_train.shape[1]
+
+        trivial_baseline = get_trivial_baseline(X_train, y_train)
+        gradient_boosted_baseline = get_gradient_boosted_baseline(
+            X_train, y_train, cfg=cfg
+        )
+
+        model = ReadmittanceModel(n_features).to(cfg.device)
+        optimizer = torch.optim.SGD(
+            model.parameters(), lr=cfg.learning_rate, momentum=0.9
+        )
+        criterion = torch.nn.BCEWithLogitsLoss(pos_weight=d["pos_weight"])
+
+        history = train_model(
+            model=model,
+            train_loader=train_loader,
+            val_loader=val_loader,
+            optimizer=optimizer,
+            criterion=criterion,
+            resume=False,
+            checkpoint_path="runs/",
+            cfg=cfg
+        )
+
+        results = {
+            "trivial": evaluate_baseline(trivial_baseline, X_val, y_val, threshold=cfg.threshold),
+            "hgb": evaluate_baseline(gradient_boosted_baseline, X_val, y_val, threshold=cfg.threshold),
+            "model": evaluate_model(model=model, loader=val_loader, threshold=cfg.threshold)
+        }
+
+        print_numbers(results)
+
+
+def command_train(out, is_smoke=False):
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+
+    if is_smoke:
+        cfg = get_config(is_smoke=True)
+    else:
+        cfg = get_config()
 
     df = prepare_data()
 
@@ -43,11 +115,6 @@ def run():
         y_val,
         batch_size=cfg.batch_size
     )
-    test_loader = make_loader(
-        X_test,
-        y_test,
-        cfg.batch_size
-    )
 
     n_features = X_train.shape[1]
 
@@ -69,9 +136,11 @@ def run():
         optimizer=optimizer,
         criterion=criterion,
         resume=False,
-        checkpoint_path="runs/",
+        checkpoint_path=out,
         cfg=cfg
     )
+
+    load_checkpoint(model=model, optim=optimizer, path=out, name="best_run.pt")
 
     results = {
         "trivial": evaluate_baseline(trivial_baseline, X_val, y_val, threshold=cfg.threshold),
@@ -82,12 +151,44 @@ def run():
     print_numbers(results)
 
 
-def command_train(out, is_smoke=False):
-    ...
-
-
 def command_evaluate(checkpoint, out):
-    ...
+    checkpoint_path = Path(checkpoint)
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+
+    cfg = get_config()
+
+    torch.manual_seed(cfg.seed)
+
+    df = prepare_data()
+
+    d = split_train_val_test(df=df, cfg=cfg)
+    X_test = d["X_test"]
+    y_test = d["y_test"]
+
+    test_loader = make_loader(X_test, y_test, batch_size=cfg.batch_size)
+
+    n_features = X_test.shape[1]
+    model = ReadmittanceModel(n_features).to(cfg.device)
+    ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+
+    model.load_state_dict(ckpt["model"])
+
+    result = evaluate_model(
+        model=model, loader=test_loader, threshold=cfg.threshold
+    )
+
+    metrics = {
+        "test_accuracy": float(result["accuracy"]),
+        "test_precision": float(result["precision"]),
+        "test_recall": float(result["recall"]),
+        "test_f1": float(result["f1"]),
+        "test_pr_auc": float(result["pr_auc"]),
+        "test_confusion": result["confusion"],
+        "threshold": cfg.threshold,
+    }
+
+    out.write_text(json.dumps(metrics, indent=4), encoding="utf-8")
 
 
 def command_split(out):
