@@ -10,6 +10,7 @@ def load_data() -> pd.DataFrame:
         csv_path,
         na_values="?",
         keep_default_na=False,
+        low_memory=False
     )
 
     return df

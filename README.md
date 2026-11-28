@@ -52,7 +52,84 @@ unchanged copy from the GitHub Release (tag `0.1.0`) into `datasets/`. See `ATTR
 
 ## Reproducibility
 
-## Data after training
+### Quick Setup
+Needs Python 3.12. Everything runs on CPU, no GPU needed.
+
+```
+git clone https://github.com/brown-cookies/qin-pytorch-week-02.git
+cd qin-pytorch-week-02
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m pytest
+```
+
+The dataset downloads itself into `datasets/` the first time it is needed.
+It is an unchanged copy from the GitHub Release (tag `0.1.0`), checked
+against a SHA-256 checksum. See `ATTRIBUTION.md` for the source and licence.
+
+### Re-running
+1. Split. Grouped by `patient_nbr`, `seed = 42` (in `src/config.py`), so two runs give the same indices and no patient appears in two sets.
+
+```
+python -m src.main split --out runs/split.json
+```
+
+2. Smoke training run. 10 epochs, batch size 46. It only checks that the training code runs, about `<N>` minutes on CPU.
+
+```
+python -m src.main train --smoke --out runs/smoke
+```
+
+3. Full training. Writes `runs/manual/best_run.pt` (best validation loss) and `last_run.pt`.
+
+```
+python -m src.main train --out runs/train
+```
+
+4. Evaluate on the test set. Loads the checkpoint only.
+
+```
+python -m src.main evaluate --checkpoint runs/manual/best_run.pt --metrics-out runs/metrics.json
+```
+
+Expected: `<metric>` = `<value>` (±`<tolerance>`, because `<reason>`).
+
+To train the three seeds (42, 76, 127) run `python -m src.main run`.
+
+## Data after training across three seeds (42, 76, 127)
+
+### My Model Performance
+
+Performance across three random seeds.
+
+| Seed | Accuracy | Precision | Recall | F1-Score | PR-AUC |
+|:----:|---------:|----------:|-------:|---------:|-------:|
+| 42   | 0.6213719452270196 | 0.1674539827333442 | 0.6061320754716981 | 0.2624122527121889 | 0.21683630745238044 |
+| 76   | 0.6665139416153947 | 0.17862595419847327 | 0.5419803126809496 | 0.2686952777379073 | 0.19960835104966174 |
+| 127  | 0.7065117500328213 | 0.1772582841579664 | 0.48002458512599877 | 0.2589093320072932 | 0.19593288221352637 |
+
+### My Model PR-AUC Comparison
+
+Seed 42 is used as the reference baseline.
+
+| Seed | PR-AUC | Difference from Seed 42 |
+|:----:|-------:|------------------------:|
+| 42   | 0.2168 | 0.0000 |
+| 76   | 0.1996 | -0.0172 |
+| 127  | 0.1959 | -0.0209 |
+
+### PR-AUC Baseline Comparison
+
+| Seed | Trivial Baseline | HGB Baseline | My Model |
+|:----:|-----------------:|-------------:|---------:|
+| 42   | 0.11111839087990566 | 0.22797038159861208 | 0.21683630745238044 |
+| 76   | 0.11303835580573374 | 0.23127247748798815 | 0.19960835104966174 |
+| 127  | 0.10680057765524485 | 0.20964018406480855 | 0.19593288221352637 |
+
+Seed 42 has the highest PR-AUC among the 3 seed runs and also got the closest PR-AUC compare to HGB Baseline. But it 
+remained below the HGB baseline across all 3 seeds and didn't not beat it.
+
 
 ## Error Analysis
 
@@ -171,6 +248,22 @@ have a multiple visit. After researching, if not grouped properly, the model can
 test scores.
 
 **What I did** Split by patients, not by rows. All rows of the same `patient_nbr` goes to same set (train, val, test).
+
+
+## Limit
+
+### Review Capacity 
+
+The dataset does not give me a review limit, so this number comes from my own understanding.
+
+The dataset have approx 101k encounters over 130 hospitals over 10 years (1999-2008).
+It has no hospital ids for me to check the spread of the readmittion so I assumed every hospital the same and treat the data as one big hospital, `~101k / 3,650 days ≈ 28 encounters a day`. I do not understand how hospital staffing works, but I understand that in 130 hospitals, they have a different staffing mechanics. 
+
+**Explaination:** The dataset have approx 101k encounters over 130 hospitals over 10 years (1999-2008).
+It has no hospital ids for me to check the spread of the readmittion so I assumed every hospital the same , `~101k / 3,650 days ≈ 28 encounters a day`. I do not understand how hospital staffing works, but I understand that in 130 hospitals, they have a different staffing mechanics. I treat this as rough guide.
+
+**Assumption:** Assuming a nurse can review 10 patients a day on a single shift. 10 out of 28 is approximately 36% patients. My validation and test set is ~15k encounters, at 36%, this is about 5400.
+
 
 ## Ways of Handling the Imbalanced (What I did)
 

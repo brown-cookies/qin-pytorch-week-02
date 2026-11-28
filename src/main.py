@@ -72,7 +72,7 @@ def run():
             optimizer=optimizer,
             criterion=criterion,
             resume=False,
-            checkpoint_path="runs/",
+            checkpoint_path=f"runs/{seed}",
             cfg=cfg
         )
 
