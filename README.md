@@ -52,7 +52,52 @@ unchanged copy from the GitHub Release (tag `0.1.0`) into `datasets/`. See `ATTR
 
 ## Reproducibility
 
-## Data after training
+### Quick Setup
+Needs Python 3.12. Everything runs on CPU, no GPU needed.
+
+```
+git clone https://github.com/brown-cookies/qin-pytorch-week-02.git
+cd qin-pytorch-week-02
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m pytest
+```
+
+The dataset downloads itself into `datasets/` the first time it is needed.
+It is an unchanged copy from the GitHub Release (tag `0.1.0`), checked
+against a SHA-256 checksum. See `ATTRIBUTION.md` for the source and licence.
+
+### Re-running
+1. Split. Grouped by `patient_nbr`, `seed = 42` (in `src/config.py`), so two runs give the same indices and no patient appears in two sets.
+
+```
+python -m src.main split --out runs/split.json
+```
+
+2. Smoke training run. 10 epochs, batch size 46. It only checks that the training code runs, about `<N>` minutes on CPU.
+
+```
+python -m src.main train --smoke --out runs/smoke
+```
+
+3. Full training. Writes `runs/manual/best_run.pt` (best validation loss) and `last_run.pt`.
+
+```
+python -m src.main train --out runs/train
+```
+
+4. Evaluate on the test set. Loads the checkpoint only.
+
+```
+python -m src.main evaluate --checkpoint runs/manual/best_run.pt --metrics-out runs/metrics.json
+```
+
+Expected: `<metric>` = `<value>` (±`<tolerance>`, because `<reason>`).
+
+To train the three seeds (42, 76, 127) run `python -m src.main run`.
+
+## Data after training across three seeds (42, 76, 127)
 
 ## Error Analysis
 
